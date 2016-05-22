@@ -9,76 +9,175 @@
 
     _oneButtonAction: {},
     _comboAction: [],
-    _pressed: {},
+    _sequenceComboAction: [],
+    _isPressedNow: [],
+    _lastPressed: [],
 
     _downResponse: function(event) {
         var code = event.keyCode;
+        var index = bw._isPressedNow.indexOf(code);
 
-        for (var key in bw._oneButtonAction) {
-          if (key == code) {
-            bw._oneButtonAction[code](event);
-          }
+        if (index == -1) {
+          bw._isPressedNow.push(code);
         }
 
-        bw._pressed[code] = true;
+        if (bw._lastPressed.length == 8) {
+          bw._lastPressed.shift();
+        }
+        bw._lastPressed.push(code);
+
+        bw._doAction(event, code);
+        bw._doCombo(event);
+        bw._doSequenceCombo(event);
     },
 
     _upResponse: function(event) {
         var code = event.keyCode;
-        delete bw._pressed[code];
+        var index = bw._isPressedNow.indexOf(code);
+
+        if (index != -1) {
+          bw._isPressedNow.splice(index, 1);
+        }
     },
 
-    action: function(buttons, action) {
-        var self = this;
-        var codes = self._findCode(buttons);
-
-        codes.forEach(function(code) {
-
-          if (Array.isArray(code) && action) {
-
-              code.forEach(function(x) {
-                self._oneButtonAction[x] = action;
-              });
-
-          } else if (action) {
-              self._oneButtonAction[code] = action;
-
-          } else if (Array.isArray(code) && !action) {
-
-              code.forEach(function(x) {
-                delete self._oneButtonAction[x];
-              });
-
-          } else if (!action) {
-              delete self._oneButtonAction[code];
-          }
-        });
-    },
-
-    combo: function(buttons, action) {
-        var self = this;
-        var codes = self._findCode(buttons);
-
-        if (action) {
-
-          self._comboAction.push({
-            'combo': codes,
-            'action': action
-          });
-
-        } else {
-          //if array «codes» contains arrays then in «mergedArr» they all merged in one array
-          var mergedArr = codes.join('|').split(',').join('|').split('|').map(function(x) {return +x});
-          for (var i = 0; i < self._comboAction; i++) {
-            var combo = self._comboAction[i].combo;
-            var match = combo.every(function(x) {
-              if 
-            });
+    _doAction: function(event, code) {
+        for (var key in this._oneButtonAction) {
+          if (key == code) {
+            bw._oneButtonAction[code](event);
           }
         }
     },
 
-    sequenceCombo: function(buttons, action) {},
+    _doCombo: function(event) {
+        var self = this;
+        var event = event;
+
+        self._comboAction.forEach(function(obj) {
+          var match = self._compareArrays(obj.combo, self._isPressedNow);
+          if (match) {
+            self._isPressedNow = [];
+            obj.action(event);
+          }
+        });
+    },
+
+    _doSequenceCombo: function(event) {
+        var self = this;
+        var event = event;
+
+        self._sequenceComboAction.forEach(function(obj) {
+          var cuttingLength = -obj.combo.length;
+          var lastPressed = self._lastPressed.slice(cuttingLength);
+          var match = self._lineCompareArrays(obj.combo, lastPressed);
+          if (match) {
+            obj.action(event);
+          }
+        });
+    },
+
+    action: function(buttons, action) {
+        var codes = this._findCode(buttons);
+
+        if (action) {
+          this._setAction(codes, action);
+        } else {
+          this._delAction(codes);
+        }
+    },
+
+    _setAction: function(buttons, action) {
+        var self = this;
+        buttons.forEach(function(button) {
+
+          if (Array.isArray(button)) {
+            button.forEach(function(x) {
+              self._oneButtonAction[x] = action;
+            });
+          } else {
+            self._oneButtonAction[button] = action;
+          }
+        });
+    },
+
+    _delAction: function(buttons) {
+        var self = this;
+        buttons.forEach(function(button) {
+
+          if (Array.isArray(button)) {
+            button.forEach(function(x) {
+              delete self._oneButtonAction[x];
+            });
+          } else {
+            delete self._oneButtonAction[button];
+          }
+
+        });
+    },
+
+    combo: function(buttons, action) {
+        var combo = this._findCode(buttons);
+
+        if (action) {
+          this._setCombo(combo, action);
+        } else {
+          this._delCombo(combo);
+        }
+    },
+
+    _setCombo: function(combo, action) {
+        this._comboAction.push({
+          'combo': combo,
+          'action': action
+        });
+    },
+
+    _delCombo: function(combo) {
+        var self = this;
+        var settedCombo;
+        var match;
+        for (var i = 0; i < self._comboAction.length; i++) {
+          settedCombo = self._comboAction[i].combo;
+          match = self._compareArrays(settedCombo, combo);
+
+          if (match) {
+            self._comboAction.splice(i, 1);
+            break;
+          }
+        }
+    },
+
+    sequenceCombo: function(buttons, action) {
+        var combo = this._findCode(buttons);
+
+        if (action) {
+          this._setSequenceCombo(combo, action);
+        } else {
+          this._delSequenceCombo(combo);
+        }
+    },
+
+    _setSequenceCombo: function(combo, action) {
+        this._sequenceComboAction.push({
+          'combo': combo,
+          'action': action
+        });
+    },
+
+    _delSequenceCombo: function(combo) {
+        var self = this;
+        var settedCombo;
+        var match;
+
+        for (var i = 0; i < self._sequenceComboAction.length; i++) {
+          settedCombo = self._sequenceComboAction[i].combo;
+          match = self._lineCompareArrays(settedCombo, combo);
+
+          if (match) {
+            self._sequenceComboAction.splice(i, 1);
+            break;
+          }
+        }
+    },
 
     _findCode: function(buttons) {
         var self = this;
@@ -87,6 +186,49 @@
             return self._keyCodes[button];
           } else {
             return button;
+          }
+        });
+    },
+
+    _compareArrays: function(local, visitant) {
+        if (local.length != visitant.length) return false;
+        
+        var mergedVisitant = [].concat.apply([], visitant);
+
+        return local.every(function(elem) {
+          if (Array.isArray(elem)) {
+            return elem.some(function(x) {
+              return (mergedVisitant.indexOf(x) != -1);
+            })
+          }
+
+          return (mergedVisitant.indexOf(elem) != -1);
+        });
+    },
+
+    _lineCompareArrays: function(local, visitant) {
+        if (local.length != visitant.length) return false;
+
+        return local.every(function(elem, i) {
+          var visitantElem = visitant[i];
+          var elemIsArray = Array.isArray(elem);
+          var visitantElemIsArray = Array.isArray(visitantElem);
+
+          if (elemIsArray && visitantElemIsArray) {
+              return elem.toString() === visitantElem.toString();
+
+          } else if (elemIsArray || visitantElemIsArray) {
+              var match;
+
+              if (elemIsArray) {
+                match = elem.indexOf(visitantElem);
+              } else {
+                match = visitantElem.indexOf(elem);
+              }
+              return match != -1;
+
+          } else {
+              return elem === visitantElem;
           }
         });
     },
