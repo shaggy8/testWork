@@ -2,53 +2,81 @@
 
   this.buttonWatch = this.bw = {
 
-    init: function() {
+    turnOn: function() {
         document.addEventListener('keydown', this._downResponse);
         document.addEventListener('keyup', this._upResponse);
+        document.addEventListener('keypress', this._pressResponse);
     },
 
-    _oneButtonAction: {},
+    turnOff: function() {
+        document.removeEventListener('keydown', this._downResponse);
+        document.removeEventListener('keyup', this._upResponse);
+        document.removeEventListener('keypress', this._pressResponse);
+    },
+
+    _onDownAction: {},
+    _onUpAction: {},
+    _onPressAction: {},
     _comboAction: [],
-    _sequenceComboAction: [],
+    _onSequenceComboAction: [],
+    _onWriteAction: [],
     _isPressedNow: [],
     _lastPressed: [],
+    _lastWrite: [],
 
     _downResponse: function(event) {
+        var self = buttonWatch;
         var code = event.keyCode;
-        var index = bw._isPressedNow.indexOf(code);
+        var index = self._isPressedNow.indexOf(code);
 
         if (index == -1) {
-          bw._isPressedNow.push(code);
+          self._isPressedNow.push(code);
         }
 
-        if (bw._lastPressed.length == 8) {
-          bw._lastPressed.shift();
+        if (self._lastPressed.length == 13) {
+          self._lastPressed.shift();
         }
-        bw._lastPressed.push(code);
+        self._lastPressed.push(code);
 
-        bw._doAction(event, code);
-        bw._doCombo(event);
-        bw._doSequenceCombo(event);
+        self._doEventAction('_onDownAction', event, code);
+        self._doComboAction(event);
+        self._doSequenceOfEventsAction('_onSequenceComboAction', event, '_lastPressed');
     },
 
     _upResponse: function(event) {
+        var self = buttonWatch;
         var code = event.keyCode;
-        var index = bw._isPressedNow.indexOf(code);
+        var index = self._isPressedNow.indexOf(code);
 
         if (index != -1) {
-          bw._isPressedNow.splice(index, 1);
+          self._isPressedNow.splice(index, 1);
         }
+        self._doEventAction('_onUpAction', event, code);
     },
 
-    _doAction: function(event, code) {
-        for (var key in this._oneButtonAction) {
+    _pressResponse: function(event) {
+        var self = buttonWatch;
+        var code = self._getChar(event);
+
+        if (self._lastWrite.length == 13) {
+          self._lastWrite.shift();
+        }
+        self._lastWrite.push(code);
+
+        self._doEventAction('_onPressAction', event, code);
+        self._doSequenceOfEventsAction('_onWriteAction', event, '_lastWrite');
+    },
+
+    _doEventAction: function(eventType, event, code) {
+        var self = this;
+        for (var key in self[eventType]) {
           if (key == code) {
-            bw._oneButtonAction[code](event);
+            self[eventType][code](event);
           }
         }
     },
 
-    _doCombo: function(event) {
+    _doComboAction: function(event) {
         var self = this;
         var event = event;
 
@@ -61,54 +89,71 @@
         });
     },
 
-    _doSequenceCombo: function(event) {
+    _doSequenceOfEventsAction: function(sequenceType, event, listLast) {
         var self = this;
         var event = event;
 
-        self._sequenceComboAction.forEach(function(obj) {
-          var cuttingLength = -obj.combo.length;
-          var lastPressed = self._lastPressed.slice(cuttingLength);
-          var match = self._lineCompareArrays(obj.combo, lastPressed);
+        self[sequenceType].forEach(function(obj) {
+          var cuttingLength = -obj.combination.length;
+          var last = self[listLast].slice(cuttingLength);
+          var match = self._sequentialCompareArrays(obj.combination, last);
           if (match) {
             obj.action(event);
           }
         });
     },
 
-    action: function(buttons, action) {
-        var codes = this._findCode(buttons);
+    down: function(buttons, action) {
+        this._keyAction('_onDownAction', buttons, action);
+    },
+
+    up: function(buttons, action) {
+        this._keyAction('_onUpAction', buttons, action);
+    },
+
+    press: function(buttons, action) {
+        this._keyAction('_onPressAction', buttons, action);
+    },
+
+    _keyAction: function(eventType, buttons, action) {
+        var codes;
+        if (eventType != '_onPressAction') {
+          codes = this._findCode(buttons);
+        } else {
+          codes = buttons;
+        }
 
         if (action) {
-          this._setAction(codes, action);
+          this._setKeyAction(eventType, codes, action);
         } else {
-          this._delAction(codes);
+          this._delKeyAction(eventType, codes);
         }
     },
 
-    _setAction: function(buttons, action) {
+    _setKeyAction: function(eventType, buttons, action) {
         var self = this;
         buttons.forEach(function(button) {
 
           if (Array.isArray(button)) {
             button.forEach(function(x) {
-              self._oneButtonAction[x] = action;
+              self[eventType][x] = action;
             });
           } else {
-            self._oneButtonAction[button] = action;
+            self[eventType][button] = action;
           }
         });
     },
 
-    _delAction: function(buttons) {
+    _delKeyAction: function(eventType, buttons) {
         var self = this;
         buttons.forEach(function(button) {
 
           if (Array.isArray(button)) {
             button.forEach(function(x) {
-              delete self._oneButtonAction[x];
+              delete self[eventType][x];
             });
           } else {
-            delete self._oneButtonAction[button];
+            delete self[eventType][button];
           }
 
         });
@@ -118,20 +163,20 @@
         var combo = this._findCode(buttons);
 
         if (action) {
-          this._setCombo(combo, action);
+          this._setComboAction(combo, action);
         } else {
-          this._delCombo(combo);
+          this._delComboAction(combo);
         }
     },
 
-    _setCombo: function(combo, action) {
+    _setComboAction: function(combo, action) {
         this._comboAction.push({
           'combo': combo,
           'action': action
         });
     },
 
-    _delCombo: function(combo) {
+    _delComboAction: function(combo) {
         var self = this;
         var settedCombo;
         var match;
@@ -147,33 +192,47 @@
     },
 
     sequenceCombo: function(buttons, action) {
-        var combo = this._findCode(buttons);
+        this._sequenceOfEventsAction('_onSequenceComboAction', buttons, action);
+    },
+
+    write: function(text, action) {
+        var buttons = text.split('');
+        this._sequenceOfEventsAction('_onWriteAction', buttons, action);
+    },
+
+    _sequenceOfEventsAction: function(eventType, buttons, action) {
+        var combination;
+        if (eventType != '_onWriteAction') {
+          combination = this._findCode(buttons);
+        } else {
+          combination = buttons;
+        }
 
         if (action) {
-          this._setSequenceCombo(combo, action);
+          this._setSequenceOfEventsAction(eventType, combination, action);
         } else {
-          this._delSequenceCombo(combo);
+          this._delSequenceOfEventsAction(eventType, combination);
         }
     },
 
-    _setSequenceCombo: function(combo, action) {
-        this._sequenceComboAction.push({
-          'combo': combo,
+    _setSequenceOfEventsAction: function(eventType, combination, action) {
+        this[eventType].push({
+          'combination': combination,
           'action': action
         });
     },
 
-    _delSequenceCombo: function(combo) {
+    _delSequenceOfEventsAction: function(eventType, combination) {
         var self = this;
-        var settedCombo;
+        var settedCombination;
         var match;
 
-        for (var i = 0; i < self._sequenceComboAction.length; i++) {
-          settedCombo = self._sequenceComboAction[i].combo;
-          match = self._lineCompareArrays(settedCombo, combo);
+        for (var i = 0; i < self[eventType].length; i++) {
+          settedCombination = self[eventType][i].combination;
+          match = self._sequentialCompareArrays(settedCombination, combination);
 
           if (match) {
-            self._sequenceComboAction.splice(i, 1);
+            self[eventType].splice(i, 1);
             break;
           }
         }
@@ -188,6 +247,20 @@
             return button;
           }
         });
+    },
+
+    _getChar: function(event) {
+        if (event.which == null) {
+          if (event.keyCode < 32) return null;
+          return String.fromCharCode(event.keyCode)
+        }
+
+        if (event.which != 0 && event.charCode != 0) {
+          if (event.which < 32) return null;
+          return String.fromCharCode(event.which);
+        }
+
+        return null;
     },
 
     _compareArrays: function(local, visitant) {
@@ -206,7 +279,7 @@
         });
     },
 
-    _lineCompareArrays: function(local, visitant) {
+    _sequentialCompareArrays: function(local, visitant) {
         if (local.length != visitant.length) return false;
 
         return local.every(function(elem, i) {
