@@ -9,9 +9,138 @@
 	<script src="js/scripts.js"></script>
 </head>
 <body>
+<header>
+	<h1 class="main-header">Hello!</h1>
+	<p class="about-me">My name is Roman Semenko. I'm new in frontend. I have knew and learned frontend on frontend courses «WinnerOS» by <a class="about-me__link" href="http://goit.ua/">GoIt</a>.</p>
+	<ul class="about-me about-me--list">I have no working experience... But I can show you my training works! There are in the repositories:
+		<li class="about-me__item">
+			<a href="https://github.com/shaggy8/js_hw_13-14" class="about-me__link">Little crazy test</a>
+		</li>
+		<li class="about-me__item">
+			<a href="https://github.com/shaggy8/js_hw_19-20" class="about-me__link">Developed model of a webpage with some animation</a>
+		</li>
+		<li class="about-me__item">
+			<a href="https://github.com/shaggy8/Ekzamen2" class="about-me__link">Responsive model of a webpage with some plugins and AJAX</a>
+			<br>
+			<a href="http://shaggy8.github.io/" class="about-me__link">Here is an example</a> (put text in input of «Discover holiday activity ideas» section and submit. It will request pictures on your choice).
+		</li>
+	</ul>
+</header>
+<div class="about-my-plugin">
+	<h2 class="plugin__header">Button Watch</h2>
+	<p class="about-my-plugin__text">Like test work i wrote little plugin. It responds on keyboard events. Let I show you...</p>
+	<p class="about-my-plugin__text--show-up">Push 'right' button for instruction to Homer to move right, or push 'left' button and Homer will walks left. When you push 'ctrl' button Homer will jump.</p>
 	<div class="homer-box">
 		<div class="homer"></div>
 	</div>
-	<input type="text" class="input">
+	<p class="about-my-plugin__text--show-up">When you will press 'j', 'k' and 'l' buttons at one time Homer will jump up on the roof. Repeat this action and Homer will come back in his box.</p>
+	<p class="about-my-plugin__text about-my-plugin__text--margin">Let's leave Homer and test one more possibility of the my plugin. Write the word 'jQuery' (including proper capitalization) to see it in action.</p>
+	<p class="about-my-plugin__text about-my-plugin__text--hidden-block">I love jQuery!!!</p>
+	<input type="text" class="about-my-plugin__input" placeholder="You can use this input for keyboard events test">
+	<p class="about-my-plugin__text">For know more about the plugin read instructions.</p>
+</div>
+<div class="instructions">
+	<h2 class="instructions__header">Instructions</h2>
+	<p class="instructions__text">Button Watch is a simple plugin without the dependencies that watching on the keyboard events and responds your setted behavior.</p>
+	<p class="instructions__text">The object of the plugin has two names «buttonWatch» and short variant «bw».</p>
+	<p class="instructions__text">For plugin initialization enter code</p>
+	<code class="instructions__code">buttonWatch.turnOn();</code>
+	<p class="instructions__text">For "turning off"</p>
+	<code class="instructions__code">buttonWatch.turnOff();</code>
+	<h4 class="instructions__header">Setting behavior for reaction to keyboard events</h4>
+	<p class="instructions__text">To set the behavior on keydown</p>
+	<code class="instructions__code">buttonWatch.down(buttons, function);</code>
+	<p class="instructions__text">To set the behavior on keyup</p>
+	<code class="instructions__code">buttonWatch.up(buttons, function);</code>
+	<p class="instructions__text">To set the behavior on keypress</p>
+	<code class="instructions__code">buttonWatch.press(symbols, function);</code>
+	<p class="instructions__text">To set the behavior on pressing at one time a few buttons</p>
+	<code class="instructions__code">buttonWatch.combo(buttons, function);</code>
+	<p class="instructions__text">To set the behavior on sequence of pressing a few buttons. Limited to 13 characters.</p>
+	<code class="instructions__code">buttonWatch.sequenceCombo(buttons, function);</code>
+	<p class="instructions__text">To set the behavior on typing text string. Limited to 13 characters.</p>
+	<code class="instructions__code">buttonWatch.write(text, function);</code>
+	<p class="instructions__text"><strong>buttons</strong> - an array of button names or keyCode.</p>
+	<p class="instructions__text">In the array can be specified as the name of the buttons (string), and their keyCode (number). The names of the buttons are only available in English layout in lowercase.</p>
+	<p class="instructions__text">For example</p>
+	<code class="instructions__code">buttonWatch.down(['r', 'o', 70, 13] function() {console.log('Hi there!')});</code>
+	<p class="instructions__text"><strong>symbols</strong> - an array of symbols.</p>
+	<p class="instructions__text">Array elements can be any character that can be entered from the keyboard.</p>
+	<p class="instructions__text"><strong>Pay attention!</strong> The following commands are not identical.</p>
+	<code class="instructions__code">
+	buttonWatch.press(['q'] function() {console.log('Hi there!')});
+	<br>
+	buttonWatch.press(['Q'] function() {console.log('Hi there!')});
+	<br>
+	buttonWatch.press(['й'] function() {console.log('Hi there!')});
+	</code>
+	<p class="instructions__text"><strong>text</strong> - a text string.</p>
+	<p class="instructions__text">It may contain any characters that can be entered from the keyboard.</p>
+	<p class="instructions__text"><strong>function</strong> - function, which performance is set for reaction on event.</p>
+	<p class="instructions__text">If the function is not specified, the behavior for «buttons» and «symbols» items will be deleted!</p>
+	<p class="instructions__text">
+		<a href="http://dmauro.github.io/Keypress/">Virtual keyboard</a> and 
+		<a href="https://learn.javascript.ru/keyboard-events#keyboard-test-stand">Test stand</a> where you can find keyCode of keyboard-events.</p>
+	<hr>
+	<h2 class="instructions__header">Інструкції до плагіну</h2>
+	<p class="instructions__text">Простий плагін без залежностей, що стежить за подіями клавіатури і реагує на них заданою вами поведінкою.</p>
+	<p class="instructions__text">Об'єкт плагіна має два імені «buttonWatch» і короткий варіант «bw».</p>
+	<p class="instructions__text">Для ініціалізації плагіну ввести код</p>
+	<code class="instructions__code">buttonWatch.turnOn();</code>
+	<p class="instructions__text">Щоб його "вимкнути"</p>
+	<code class="instructions__code">buttonWatch.turnOff();</code>
+	<h4 class="instructions__header">Встановлення поведінки для реакції на події клавіатури</h4>
+	<p class="instructions__text">Для встановлення поведінки на keydown</p>
+	<code class="instructions__code">buttonWatch.down(buttons, function);</code>
+	<p class="instructions__text">Для встановлення поведінки на keyup</p>
+	<code class="instructions__code">buttonWatch.up(buttons, function);</code>
+	<p class="instructions__text">Для встановлення поведінки на keypress</p>
+	<code class="instructions__code">buttonWatch.press(symbols, function);</code>
+	<p class="instructions__text">Для встановлення поведінки на одночасне натиснення декількох кнопок</p>
+	<code class="instructions__code">buttonWatch.combo(buttons, function);</code>
+	<p class="instructions__text">Для встановлення поведінки на послідовність натискань декількох кнопок. Обмежено 13 символами.</p>
+	<code class="instructions__code">buttonWatch.sequenceCombo(buttons, function);</code>
+	<p class="instructions__text">Для встановлення поведінки на введення текстової стрічки. Обмежено 13 символами.</p>
+	<code class="instructions__code">buttonWatch.write(text, function);</code>
+	<p class="instructions__text"><strong>buttons</strong> - масив назв кнопок або їх keyCode.</p>
+	<p class="instructions__text">У масиві можуть бути вказані як назви кнопок (string), так і їх keyCode (number). Назви кнопок задаються тільки у англійській розкладці у нижньому реєстрі.</p>
+	<p class="instructions__text">Наприклад</p>
+	<code class="instructions__code">buttonWatch.down(['r', 'o', 70, 13] function() {console.log('Hi there!')});</code>
+	<p class="instructions__text"><strong>symbols</strong> - масив символів.</p>
+	<p class="instructions__text">Елементом масива може бути будь який символ, який можна ввести з клавіатури.</p>
+	<p class="instructions__text"><strong>Зверніть увагу!</strong> Наступні команди не є ідентичними.</p>
+	<code class="instructions__code">
+	buttonWatch.press(['q'] function() {console.log('Hi there!')});
+	<br>
+	buttonWatch.press(['Q'] function() {console.log('Hi there!')});
+	<br>
+	buttonWatch.press(['й'] function() {console.log('Hi there!')});
+	</code>
+	<p class="instructions__text"><strong>text</strong> - текстова стрічка.</p>
+	<p class="instructions__text">Може містити будь які символи, які можна ввести з клавіатури.</p>
+	<p class="instructions__text"><strong>function</strong> - функція, виконання якої задається для реакції на подію.</p>
+	<p class="instructions__text">Якщо функція не задана, то видаляється поведінка для елементів buttons та symbols!</p>
+	<p class="instructions__text">
+		<a href="http://dmauro.github.io/Keypress/">Віртуальна клавіатура</a> та 
+		<a href="https://learn.javascript.ru/keyboard-events#keyboard-test-stand">Тестовий стенд</a> де ви можете знайти keyCode подій клавіатури.</p>
+</div>
+<footer>
+	<div class="footer-data">
+		<h6 class="footer-data__header">Name</h6>
+		<p class="footer-data__text">Roman Semenko</p>
+	</div>
+	<div class="footer-data">
+		<h6 class="footer-data__header">Cellphone</h6>
+		<p class="footer-data__text">+380977690071</p>
+	</div>
+	<div class="footer-data">
+		<h6 class="footer-data__header">E-mail</h6>
+		<p class="footer-data__text">shaggy_8@bigmir.net</p>
+	</div>
+	<div class="footer-data">
+		<h6 class="footer-data__header">Skype</h6>
+		<p class="footer-data__text">shaggy_8</p>
+	</div>
+</footer>
 </body>
 </html>

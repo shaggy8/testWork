@@ -33,7 +33,7 @@
           self._isPressedNow.push(code);
         }
 
-        if (self._lastPressed.length == 13) {
+        if (self._lastPressed.length > 12) {
           self._lastPressed.shift();
         }
         self._lastPressed.push(code);
@@ -58,7 +58,7 @@
         var self = buttonWatch;
         var code = self._getChar(event);
 
-        if (self._lastWrite.length == 13) {
+        if (self._lastWrite.length > 12) {
           self._lastWrite.shift();
         }
         self._lastWrite.push(code);

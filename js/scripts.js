@@ -1,27 +1,91 @@
 jQuery(function() {
+  var $homer = $('.homer');
+  var walkRightInterval;
+  var walkRightSensor = false;
+  var walkLeftInterval;
+  var walkLeftSensor = false;
   bw.turnOn();
   
   bw.down(['right'], function() {
-    var $homer = $('.homer');
+    $homer.removeClass('homer--looks-left')
+          .removeClass('homer--walks-to-left')
+          .addClass('homer--walks-to-right');
 
-    if (parseFloat($homer.css('left')) > 880) return;
+    if (walkRightSensor) return;
 
-    $('.homer').css('left', function(i, value) {return parseFloat(value) + 3; })
-               .addClass('homer--walks');
+    walkRightSensor = true;
+    walkRightInterval = setInterval(function() {
+      if (parseFloat($homer.css('left')) > 886) return;
+      $homer.css('left', function(i, value) {return parseFloat(value) + 4; });
+    }, 20)
   });
-  bw.up(['right'], function() {
-    var $homer = $('.homer');
 
-    if (parseFloat($homer.css('left')) > 880) {
-      $homer.css('left', 0);
+  bw.up(['right'], function() {
+    clearInterval(walkRightInterval);
+    walkRightSensor = false;
+    $homer.removeClass('homer--walks-to-right');
+  });
+
+
+  bw.down(['left'], function() {
+    $homer.addClass('homer--looks-left')
+          .addClass('homer--walks-to-left');
+
+    if (walkLeftSensor) return;
+
+    walkLeftSensor = true;
+    walkLeftInterval = setInterval(function() {
+      if (parseFloat($homer.css('left')) < 4) return;
+      $homer.css('left', function(i, value) {return parseFloat(value) - 4; });
+    }, 20)
+  });
+
+  bw.up(['left'], function() {
+    clearInterval(walkLeftInterval);
+    walkLeftSensor = false;
+    $homer.removeClass('homer--walks-to-left');
+  });
+
+  bw.down(['ctrl'], function() {
+    var homerWalks = $homer.hasClass('homer--walks-to-left') || $homer.hasClass('homer--walks-to-right');
+    if (!homerWalks) {
+      if ($homer.hasClass('homer--looks-left')) {
+        $homer.addClass('homer--walks-to-left');
+      } else {
+        $homer.addClass('homer--walks-to-right');
+      }
     }
 
-    $('.homer').removeClass('homer--walks');
+    $homer.addClass('homer--jumps');
+    setTimeout(function() {
+      $homer.removeClass('homer--jumps');
+      if (!homerWalks) {
+        $homer.removeClass('homer--walks-to-right')
+              .removeClass('homer--walks-to-left');
+      }
+    }, 400)
   });
 
-  bw.press(['ю'], function() {console.log('fuuuuuuck!')});
-  bw.press(['ю']);
-  bw.sequenceCombo('roma'.split(''), function() {console.log('fuuuuuuck!')});
-  bw.sequenceCombo('roma'.split(''));
-  bw.write('Настя', function() {console.log('fine!')});
+  bw.combo(['j', 'k', 'l'], function() {
+    $homer.toggleClass('homer-on-the-top');
+
+    if ($homer.hasClass('homer--looks-left')) {
+      $homer.addClass('homer--walks-to-left');
+    } else {
+      $homer.addClass('homer--walks-to-right');
+    }
+
+    setTimeout(function() {
+        $homer.removeClass('homer--walks-to-right')
+              .removeClass('homer--walks-to-left');
+    }, 400)
+  });
+
+  bw.write('jQuery', function() {
+    var $hiddenBlock = $('.about-my-plugin__text--hidden-block');
+    $hiddenBlock.show();
+    setTimeout(function() {
+      $hiddenBlock.hide();
+    }, 1000);
+  });
 });
