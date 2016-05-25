@@ -63,16 +63,16 @@
 	<p class="instructions__text"><strong>buttons</strong> - an array of button names or keyCode.</p>
 	<p class="instructions__text">In the array can be specified as the name of the buttons (string), and their keyCode (number). The names of the buttons are only available in English layout in lowercase.</p>
 	<p class="instructions__text">For example</p>
-	<code class="instructions__code">buttonWatch.down(['r', 'o', 70, 13] function() {console.log('Hi there!')});</code>
+	<code class="instructions__code">buttonWatch.down(['r', 'o', 70, 13], function() {console.log('Hi there!')});</code>
 	<p class="instructions__text"><strong>symbols</strong> - an array of symbols.</p>
 	<p class="instructions__text">Array elements can be any character that can be entered from the keyboard.</p>
 	<p class="instructions__text"><strong>Pay attention!</strong> The following commands are not identical.</p>
 	<code class="instructions__code">
-	buttonWatch.press(['q'] function() {console.log('Hi there!')});
+	buttonWatch.press(['q'], function() {console.log('Hi there!')});
 	<br>
-	buttonWatch.press(['Q'] function() {console.log('Hi there!')});
+	buttonWatch.press(['Q'], function() {console.log('Hi there!')});
 	<br>
-	buttonWatch.press(['й'] function() {console.log('Hi there!')});
+	buttonWatch.press(['й'], function() {console.log('Hi there!')});
 	</code>
 	<p class="instructions__text"><strong>text</strong> - a text string.</p>
 	<p class="instructions__text">It may contain any characters that can be entered from the keyboard.</p>
@@ -105,16 +105,16 @@
 	<p class="instructions__text"><strong>buttons</strong> - масив назв кнопок або їх keyCode.</p>
 	<p class="instructions__text">У масиві можуть бути вказані як назви кнопок (string), так і їх keyCode (number). Назви кнопок задаються тільки у англійській розкладці у нижньому реєстрі.</p>
 	<p class="instructions__text">Наприклад</p>
-	<code class="instructions__code">buttonWatch.down(['r', 'o', 70, 13] function() {console.log('Hi there!')});</code>
+	<code class="instructions__code">buttonWatch.down(['r', 'o', 70, 13], function() {console.log('Hi there!')});</code>
 	<p class="instructions__text"><strong>symbols</strong> - масив символів.</p>
 	<p class="instructions__text">Елементом масива може бути будь який символ, який можна ввести з клавіатури.</p>
 	<p class="instructions__text"><strong>Зверніть увагу!</strong> Наступні команди не є ідентичними.</p>
 	<code class="instructions__code">
-	buttonWatch.press(['q'] function() {console.log('Hi there!')});
+	buttonWatch.press(['q'], function() {console.log('Hi there!')});
 	<br>
-	buttonWatch.press(['Q'] function() {console.log('Hi there!')});
+	buttonWatch.press(['Q'], function() {console.log('Hi there!')});
 	<br>
-	buttonWatch.press(['й'] function() {console.log('Hi there!')});
+	buttonWatch.press(['й'], function() {console.log('Hi there!')});
 	</code>
 	<p class="instructions__text"><strong>text</strong> - текстова стрічка.</p>
 	<p class="instructions__text">Може містити будь які символи, які можна ввести з клавіатури.</p>

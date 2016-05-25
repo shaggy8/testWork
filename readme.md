@@ -61,7 +61,7 @@ In the array can be specified as the name of the buttons (string), and their key
 For example
 
 ```js
-buttonWatch.down(['r', 'o', 70, 13] function() {console.log('Hi there!')});
+buttonWatch.down(['r', 'o', 70, 13], function() {console.log('Hi there!')});
 ```
 
 **symbols** - an array of symbols.
@@ -71,9 +71,9 @@ Array elements can be any character that can be entered from the keyboard.
 Pay attention! The following commands are not identical.
 
 ```js
-buttonWatch.press(['q'] function() {console.log('Hi there!')});
-buttonWatch.press(['Q'] function() {console.log('Hi there!')});
-buttonWatch.press(['й'] function() {console.log('Hi there!')});
+buttonWatch.press(['q'], function() {console.log('Hi there!')});
+buttonWatch.press(['Q'], function() {console.log('Hi there!')});
+buttonWatch.press(['й'], function() {console.log('Hi there!')});
 ```
 
 **text** - a text string.
@@ -152,7 +152,7 @@ buttonWatch.write(text, function);
 Наприклад
 
 ```js
-buttonWatch.down(['r', 'o', 70, 13] function() {console.log('Hi there!')});
+buttonWatch.down(['r', 'o', 70, 13], function() {console.log('Hi there!')});
 ```
 
 **symbols** - масив символів.
@@ -162,9 +162,9 @@ buttonWatch.down(['r', 'o', 70, 13] function() {console.log('Hi there!')});
 Зверніть увагу! Наступні команди не є ідентичними.
 
 ```js
-buttonWatch.press(['q'] function() {console.log('Hi there!')});
-buttonWatch.press(['Q'] function() {console.log('Hi there!')});
-buttonWatch.press(['й'] function() {console.log('Hi there!')});
+buttonWatch.press(['q'], function() {console.log('Hi there!')});
+buttonWatch.press(['Q'], function() {console.log('Hi there!')});
+buttonWatch.press(['й'], function() {console.log('Hi there!')});
 ```
 
 **text** - текстова стрічка.
